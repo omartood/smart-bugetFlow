@@ -1,6 +1,6 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
-import { Dashboard } from './components/Dashboard';
+import { EnhancedDashboard } from './components/EnhancedDashboard';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -16,7 +16,7 @@ function AppContent() {
     );
   }
 
-  return user ? <Dashboard /> : <Auth />;
+  return user ? <EnhancedDashboard /> : <Auth />;
 }
 
 function App() {
