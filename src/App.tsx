@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Auth } from './components/Auth';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
+import { LandingPage } from './components/LandingPage';
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
 
   if (loading) {
     return (
@@ -16,7 +19,15 @@ function AppContent() {
     );
   }
 
-  return user ? <EnhancedDashboard /> : <Auth />;
+  if (user) {
+    return <EnhancedDashboard />;
+  }
+
+  if (showAuth) {
+    return <Auth />;
+  }
+
+  return <LandingPage onGetStarted={() => setShowAuth(true)} />;
 }
 
 function App() {
