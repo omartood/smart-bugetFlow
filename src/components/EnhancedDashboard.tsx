@@ -14,7 +14,10 @@ import { InsightsPanel } from './InsightsPanel';
 import { RecurringManager } from './RecurringManager';
 import { GoalsTracker } from './GoalsTracker';
 import { BillsManager } from './BillsManager';
+import RecommendationsPanel from './RecommendationsPanel';
+import { categoryService } from '../services/categoryService';
 import { exportUtils } from '../utils/exportUtils';
+import { Category } from '../types';
 import {
   Wallet,
   LogOut,
@@ -48,6 +51,7 @@ export function EnhancedDashboard() {
   const [activeGoalsCount, setActiveGoalsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -56,15 +60,17 @@ export function EnhancedDashboard() {
 
     setLoading(true);
     try {
-      const [budget, upcomingBills, activeGoals] = await Promise.all([
+      const [budget, upcomingBills, activeGoals, cats] = await Promise.all([
         budgetService.getBudgetByMonth(user.id, currentMonth),
         billService.getUpcomingBills(user.id, 7),
         goalsService.getActiveGoals(user.id),
+        categoryService.getAllCategories(user.id),
       ]);
 
       setCurrentBudget(budget);
       setUpcomingBillsCount(upcomingBills.length);
       setActiveGoalsCount(activeGoals.length);
+      setCategories(cats);
 
       if (budget) {
         const [summary, transactions] = await Promise.all([
@@ -393,6 +399,13 @@ export function EnhancedDashboard() {
                 color="amber"
               />
             </div>
+
+            <RecommendationsPanel
+              budget={currentBudget}
+              transactions={allTransactions}
+              categories={categories}
+              userId={user!.id}
+            />
 
             <InsightsPanel budgetSummary={budgetSummary} transactions={allTransactions} />
 
