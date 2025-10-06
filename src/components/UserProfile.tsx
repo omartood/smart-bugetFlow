@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { User, Camera, Mail, Phone, Calendar, FileText, Save, X, Loader } from 'lucide-react';
@@ -37,12 +38,12 @@ export default function UserProfile({ onClose }: UserProfileProps) {
     if (!file || !user) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+      toast.error('Please select an image file');
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('Image size must be less than 2MB');
+      toast.error('Image size must be less than 2MB');
       return;
     }
 
@@ -56,7 +57,7 @@ export default function UserProfile({ onClose }: UserProfileProps) {
       reader.readAsDataURL(file);
     } catch (error) {
       console.error('Error reading file:', error);
-      alert('Failed to read image file');
+      toast.error('Failed to read image file');
     } finally {
       setUploading(false);
     }
@@ -83,10 +84,11 @@ export default function UserProfile({ onClose }: UserProfileProps) {
       if (error) throw error;
 
       await refreshProfile();
+      toast.success('Profile updated successfully!');
       onClose();
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile. Please try again.');
+      toast.error('Failed to update profile. Please try again.');
     } finally {
       setLoading(false);
     }

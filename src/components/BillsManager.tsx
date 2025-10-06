@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { BillReminder, Category, BillFrequency } from '../types';
 import { billService } from '../services/billService';
 import { categoryService } from '../services/categoryService';
@@ -72,7 +73,7 @@ export function BillsManager({ userId, onClose }: BillsManagerProps) {
       });
     } catch (error) {
       console.error('Error creating bill:', error);
-      alert('Failed to create bill reminder');
+      toast.error('Failed to create bill reminder');
     }
   };
 

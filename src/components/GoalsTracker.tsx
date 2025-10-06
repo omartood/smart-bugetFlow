@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { SavingsGoal, Category } from '../types';
 import { goalsService } from '../services/goalsService';
 import { categoryService } from '../services/categoryService';
@@ -58,7 +59,7 @@ export function GoalsTracker({ userId, onClose }: GoalsTrackerProps) {
       setFormData({ title: '', targetAmount: '', deadline: '', categoryId: '' });
     } catch (error) {
       console.error('Error creating goal:', error);
-      alert('Failed to create goal');
+      toast.error('Failed to create goal');
     }
   };
 

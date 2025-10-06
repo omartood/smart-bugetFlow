@@ -448,7 +448,7 @@ export function EnhancedDashboard() {
 
             <InsightsPanel budgetSummary={budgetSummary} transactions={allTransactions} />
 
-            <TransactionList transactions={recentTransactions} onRefresh={loadBudgetData} />
+            <TransactionList transactions={recentTransactions} onRefresh={loadBudgetData} userId={user!.id} />
           </div>
         )}
 
@@ -462,7 +462,7 @@ export function EnhancedDashboard() {
         )}
 
         {activeTab === 'transactions' && (
-          <TransactionList transactions={allTransactions} onRefresh={loadBudgetData} />
+          <TransactionList transactions={allTransactions} onRefresh={loadBudgetData} userId={user!.id} />
         )}
       </main>
 

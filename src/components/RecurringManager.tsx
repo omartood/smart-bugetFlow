@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { RecurringTransaction, Category, RecurringFrequency } from '../types';
 import { recurringService } from '../services/recurringService';
 import { categoryService } from '../services/categoryService';
@@ -75,7 +76,7 @@ export function RecurringManager({ userId, onClose }: RecurringManagerProps) {
       });
     } catch (error) {
       console.error('Error creating recurring transaction:', error);
-      alert('Failed to create recurring transaction');
+      toast.error('Failed to create recurring transaction');
     }
   };
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Category, CategoryType } from '../types';
 import { categoryService } from '../services/categoryService';
 import { transactionService } from '../services/transactionService';
@@ -66,7 +67,7 @@ export function AddTransaction({ userId, budgetId, onComplete, onCancel }: AddTr
       onComplete();
     } catch (error) {
       console.error('Error creating transaction:', error);
-      alert('Failed to create transaction');
+      toast.error('Failed to create transaction');
     } finally {
       setLoading(false);
     }

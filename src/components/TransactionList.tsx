@@ -1,16 +1,20 @@
 import { Transaction } from '../types';
-import { Trash2, Calendar } from 'lucide-react';
+import { Trash2, Calendar, Edit } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { transactionService } from '../services/transactionService';
+import { EditTransaction } from './EditTransaction';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface TransactionListProps {
   transactions: Transaction[];
   onRefresh: () => void;
+  userId?: string;
 }
 
-export function TransactionList({ transactions, onRefresh }: TransactionListProps) {
+export function TransactionList({ transactions, onRefresh, userId }: TransactionListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -39,10 +43,11 @@ export function TransactionList({ transactions, onRefresh }: TransactionListProp
     setDeletingId(transactionId);
     try {
       await transactionService.deleteTransaction(transactionId);
+      toast.success('Transaction deleted successfully!');
       onRefresh();
     } catch (error) {
       console.error('Error deleting transaction:', error);
-      alert('Failed to delete transaction');
+      toast.error('Failed to delete transaction');
     } finally {
       setDeletingId(null);
     }
@@ -63,13 +68,14 @@ export function TransactionList({ transactions, onRefresh }: TransactionListProp
   }
 
   return (
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
-      <div className="p-6 border-b border-slate-700/50">
-        <h3 className="text-xl font-semibold text-white">Recent Transactions</h3>
-        <p className="text-slate-400 text-sm mt-1">Your latest spending activity</p>
-      </div>
+    <>
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-700/50 overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h3 className="text-xl font-semibold text-white">Recent Transactions</h3>
+          <p className="text-slate-400 text-sm mt-1">Your latest spending activity</p>
+        </div>
 
-      <div className="divide-y divide-slate-700/50">
+        <div className="divide-y divide-slate-700/50">
         {transactions.map((transaction) => {
           const Icon = getIcon(transaction.category?.icon || 'Circle');
 
@@ -115,13 +121,25 @@ export function TransactionList({ transactions, onRefresh }: TransactionListProp
                       <span className="text-white font-semibold text-lg">
                         {formatCurrency(Number(transaction.amount))}
                       </span>
-                      <button
-                        onClick={() => handleDelete(transaction.id)}
-                        disabled={deletingId === transaction.id}
-                        className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 rounded-lg transition-all disabled:opacity-50"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-400" />
-                      </button>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {userId && (
+                          <button
+                            onClick={() => setEditingTransaction(transaction)}
+                            className="p-2 hover:bg-blue-500/20 rounded-lg transition-all"
+                            title="Edit transaction"
+                          >
+                            <Edit className="w-4 h-4 text-blue-400" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(transaction.id)}
+                          disabled={deletingId === transaction.id}
+                          className="p-2 hover:bg-red-500/20 rounded-lg transition-all disabled:opacity-50"
+                          title="Delete transaction"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-400" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -129,7 +147,24 @@ export function TransactionList({ transactions, onRefresh }: TransactionListProp
             </div>
           );
         })}
+        </div>
       </div>
-    </div>
+
+      {editingTransaction && userId && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+            <EditTransaction
+              userId={userId}
+              transaction={editingTransaction}
+              onComplete={() => {
+                setEditingTransaction(null);
+                onRefresh();
+              }}
+              onCancel={() => setEditingTransaction(null)}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 }

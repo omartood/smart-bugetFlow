@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Budget } from '../types';
 import { budgetService } from '../services/budgetService';
 import { DollarSign, TrendingUp, Home, ShoppingBag, PiggyBank } from 'lucide-react';
@@ -43,7 +44,7 @@ export function BudgetSetup({ userId, month, existingBudget, onComplete, onCance
       onComplete();
     } catch (error) {
       console.error('Error saving budget:', error);
-      alert('Failed to save budget');
+      toast.error('Failed to save budget');
     } finally {
       setLoading(false);
     }
