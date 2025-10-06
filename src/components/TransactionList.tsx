@@ -1,5 +1,5 @@
 import { Transaction } from '../types';
-import { Trash2, Calendar, Edit } from 'lucide-react';
+import { Trash2, Calendar, CreditCard as Edit } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { transactionService } from '../services/transactionService';
 import { EditTransaction } from './EditTransaction';
