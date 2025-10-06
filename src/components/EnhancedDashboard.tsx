@@ -15,6 +15,7 @@ import { RecurringManager } from './RecurringManager';
 import { GoalsTracker } from './GoalsTracker';
 import { BillsManager } from './BillsManager';
 import RecommendationsPanel from './RecommendationsPanel';
+import UserProfile from './UserProfile';
 import { categoryService } from '../services/categoryService';
 import { exportUtils } from '../utils/exportUtils';
 import { Category } from '../types';
@@ -52,6 +53,7 @@ export function EnhancedDashboard() {
   const [loading, setLoading] = useState(true);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showProfile, setShowProfile] = useState(false);
 
   const currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -174,6 +176,23 @@ export function EnhancedDashboard() {
 
             <div className="hidden lg:flex items-center gap-3">
               <button
+                onClick={() => setShowProfile(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
+              >
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt="Profile"
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold">
+                    {profile?.full_name?.[0]?.toUpperCase() || profile?.email?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                )}
+                <span>Profile</span>
+              </button>
+              <button
                 onClick={() => setShowAddTransaction(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg shadow-lg shadow-emerald-500/50 hover:shadow-xl hover:scale-105 transition-all"
               >
@@ -206,6 +225,26 @@ export function EnhancedDashboard() {
 
           {showMobileMenu && (
             <div className="lg:hidden mt-4 space-y-2 pb-4 border-t border-slate-700/50 pt-4">
+              <button
+                onClick={() => {
+                  setShowProfile(true);
+                  setShowMobileMenu(false);
+                }}
+                className="w-full flex items-center gap-2 px-4 py-3 bg-slate-800 text-slate-300 rounded-lg"
+              >
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt="Profile"
+                    className="w-5 h-5 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold">
+                    {profile?.full_name?.[0]?.toUpperCase() || profile?.email?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                )}
+                <span>Profile</span>
+              </button>
               <button
                 onClick={() => {
                   setShowAddTransaction(true);
@@ -496,6 +535,18 @@ export function EnhancedDashboard() {
               onClose={() => {
                 loadBudgetData();
                 setShowBills(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {showProfile && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+            <UserProfile
+              onClose={() => {
+                setShowProfile(false);
               }}
             />
           </div>

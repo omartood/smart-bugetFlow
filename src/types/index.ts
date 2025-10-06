@@ -5,6 +5,10 @@ export interface UserProfile {
   currency: string;
   timezone: string;
   budget_rule_id?: string;
+  avatar_url?: string;
+  phone?: string;
+  bio?: string;
+  date_of_birth?: string;
   created_at: string;
   updated_at: string;
 }
