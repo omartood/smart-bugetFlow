@@ -335,7 +335,16 @@ export function EnhancedDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+            <button
+              onClick={() => setShowAccounts(true)}
+              className="p-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl border border-slate-700 transition-all text-left"
+            >
+              <Wallet className="w-5 h-5 text-purple-400 mb-2" />
+              <div className="text-white font-semibold text-sm">Accounts</div>
+              <div className="text-slate-400 text-xs">Manage</div>
+            </button>
+
             <button
               onClick={() => setShowRecurring(true)}
               className="p-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl border border-slate-700 transition-all text-left"
@@ -364,11 +373,20 @@ export function EnhancedDashboard() {
             </button>
 
             <button
-              onClick={() => setActiveTab('analytics')}
+              onClick={() => setShowNotifications(true)}
+              className="p-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl border border-slate-700 transition-all text-left"
+            >
+              <Settings className="w-5 h-5 text-cyan-400 mb-2" />
+              <div className="text-white font-semibold text-sm">Alerts</div>
+              <div className="text-slate-400 text-xs">Settings</div>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('reports')}
               className="p-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl border border-slate-700 transition-all text-left"
             >
               <BarChart3 className="w-5 h-5 text-teal-400 mb-2" />
-              <div className="text-white font-semibold text-sm">Analytics</div>
+              <div className="text-white font-semibold text-sm">Reports</div>
               <div className="text-slate-400 text-xs">View</div>
             </button>
           </div>
@@ -394,6 +412,16 @@ export function EnhancedDashboard() {
             }`}
           >
             Analytics
+          </button>
+          <button
+            onClick={() => setActiveTab('reports')}
+            className={`px-6 py-3 rounded-lg font-medium whitespace-nowrap transition-all ${
+              activeTab === 'reports'
+                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/50'
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            }`}
+          >
+            Advanced Reports
           </button>
           <button
             onClick={() => setActiveTab('transactions')}
@@ -459,6 +487,10 @@ export function EnhancedDashboard() {
               <InsightsPanel budgetSummary={budgetSummary} transactions={allTransactions} />
             )}
           </div>
+        )}
+
+        {activeTab === 'reports' && (
+          <AdvancedAnalytics userId={user!.id} currentMonth={currentMonth} />
         )}
 
         {activeTab === 'transactions' && (
@@ -548,6 +580,28 @@ export function EnhancedDashboard() {
               onClose={() => {
                 setShowProfile(false);
               }}
+            />
+          </div>
+        </div>
+      )}
+
+      {showAccounts && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+            <AccountsManager
+              userId={user!.id}
+              onClose={() => setShowAccounts(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {showNotifications && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+            <NotificationSettings
+              userId={user!.id}
+              onClose={() => setShowNotifications(false)}
             />
           </div>
         </div>
